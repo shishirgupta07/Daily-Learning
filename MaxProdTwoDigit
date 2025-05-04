@@ -1,0 +1,29 @@
+class Solution {
+    public int maxProduct(int n) {
+        int max=n%10,secondMax;
+        n=n/10;
+        secondMax=n%10;
+        n=n/10;
+        if(max<secondMax)
+        {
+            int val=secondMax;
+            secondMax=max;
+            max=val;
+        }
+        while(n>0)
+        {
+            int rem=n%10;
+            n=n/10;
+            if(rem>secondMax && rem>max)
+            {
+                secondMax=max;
+                max=rem;
+            }
+            else if(rem>secondMax)
+            {
+                secondMax=rem;
+            }
+        }
+        return max*secondMax;
+    }
+}
