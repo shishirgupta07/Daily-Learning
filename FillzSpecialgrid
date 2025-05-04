@@ -1,0 +1,38 @@
+class Solution {
+    public int[][] specialGrid(int N) {
+        int size = 1 << N; // 2^N
+        int[][] ans = new int[size][size];
+        fill(ans, 0, 0, size, 0);
+        return ans;
+    }
+
+    /**
+     * Fill the subgrid ans[row...row+size-1][col...col+size-1]
+     * with numbers starting from startVal, recursively.
+     */
+    private void fill(int[][] ans, int row, int col, int size, int startVal) {
+        if (size == 1) {
+            ans[row][col] = startVal;
+            return;
+        }
+
+        int half = size / 2;
+        int quadrantSize = half * half;
+
+        // According to problem:
+        // top-right < bottom-right < bottom-left < top-left
+        // So fill quadrants in this order with proper offsets
+
+        // 1. Top-right quadrant
+        fill(ans, row, col + half, half, startVal);
+
+        // 2. Bottom-right quadrant
+        fill(ans, row + half, col + half, half, startVal + quadrantSize);
+
+        // 3. Bottom-left quadrant
+        fill(ans, row + half, col, half, startVal + 2 * quadrantSize);
+
+        // 4. Top-left quadrant
+        fill(ans, row, col, half, startVal + 3 * quadrantSize);
+    }
+}
