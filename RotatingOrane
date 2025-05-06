@@ -1,0 +1,62 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
+class Solution {
+    public int orangesRotting(int[][] grid) {
+        int maxDistance = 0;
+        int rows = grid.length;
+        int cols = grid[0].length;
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (grid[i][j] == 1) { // fresh orange
+                    int dist = findNearestTwo(grid, i, j);
+                    if (dist == -1) {
+                        // no rotten orange reachable
+                        return -1;
+                    }
+                    maxDistance = Math.max(maxDistance, dist);
+                }
+            }
+        }
+        return maxDistance;
+    }
+
+    // BFS to find nearest rotten orange from (startX, startY)
+    public int findNearestTwo(int[][] grid, int startX, int startY) {
+        int rows = grid.length;
+        int cols = grid[0].length;
+        boolean[][] visited = new boolean[rows][cols];
+        Queue<int[]> queue = new LinkedList<>();
+
+        queue.offer(new int[]{startX, startY, 0}); // {x, y, distance}
+        visited[startX][startY] = true;
+
+        int[][] directions = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+
+        while (!queue.isEmpty()) {
+            int[] curr = queue.poll();
+            int x = curr[0], y = curr[1], dist = curr[2];
+
+            // If current cell is rotten orange, return distance
+            if (grid[x][y] == 2) {
+                return dist;
+            }
+
+            // Explore neighbors
+            for (int[] dir : directions) {
+                int newX = x + dir[0];
+                int newY = y + dir[1];
+
+                if (newX >= 0 && newX < rows && newY >= 0 && newY < cols &&
+                    grid[newX][newY] != 0 && !visited[newX][newY]) { // not empty and not visited
+                    visited[newX][newY] = true;
+                    queue.offer(new int[]{newX, newY, dist + 1});
+                }
+            }
+        }
+
+        // No rotten orange found reachable
+        return -1;
+    }
+}
